@@ -121,10 +121,11 @@ contract EpochManage is IEpochManage, Initializable {
         require(msg.sender == oracleOperator && isWithdrawDay()); //start hosting price change after the first 10 days
         require(block.timestamp.sub(lastPriceFeedTime)>=12*3600 && priceList[11] != 0); //feed only 1 time every 12 hours&&12 slots all fulfilled
 
-        if (daysAboveStrikePrice >= 8) {
+        if (daysAboveStrikePrice > 7) {
             // 7 days above strike price,then execisable, no need to feed anymore
             return;
         }
+        lastPriceFeedTime = block.timestamp;
         uint avp = _getAveragePrice();
         if (avp >= strikePrice) {
             if (isAboveStike[getCurrentEpoch()] == true) {
